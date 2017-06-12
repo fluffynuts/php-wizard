@@ -1,0 +1,180 @@
+CHANGELOG of Wizard class by Dave McColl (davydm at gmail dot com)
+
+Mon Oct 17 13:13:30 SAST 2005 <<<
+	* bug fix: when a select input had no options (and hence, none selectable)
+		(and I assume the same would happen if there was no selection made on
+		a list of options), the summary page code failed hopelessly
+>>>
+Fri Sep  9 11:52:10 SAST 2005 <<<
+	* enhancement: you may now use the wizard for a rather drab, flat form
+		generation. In this state, the wizard doesn't do any of the rendering
+		of neat bordering or titles or step numbers or any of that. And each
+		of your steps is displayed (in order, from top to bottom), essentially
+		flattening out the wizard
+		-- this lead to some re-vamping of js validation code -- which is now,
+			i think, a little smarter and neater.
+>>>
+Wed Sep  7 10:45:01 SAST 2005 <<<
+	* enhancement: settings array can now take another parameter (yay)
+		: "focus_input" is the input to focus on window load. If not set,
+		then the first input on the wizard is selected. If set to __none__,
+		then no focussing is done for you
+>>>
+Thu Aug 25 12:38:21 SAST 2005 <<<
+	* enhancement: addhinput is a short way to add a hidden input -- just
+		give it the varname and the varval -- the value is even passed
+		through htmlentities() for you for free (:
+>>>
+Tue Aug 16 08:35:18 SAST 2005 <<<
+	* enhancement -- radio and checkbox inputs have had a span to make 
+		interaction more like a checkbox / radio in windoze -- now your
+		personal scripts are added to this span as well, making the input
+		fully interactive.
+	* Obi-wan error in checkval meant that sometimes the first step in a 
+		wizard would erroneously not let the user progress, after she
+		went forward and then back again.
+>>>
+Fri Aug  5 16:39:52 SAST 2005 <<<
+	* bugfixes galore!
+		- so many bugs found in modlist -- but it's all good now (whee)
+	* new DATEPICKSTYLE variable -- if set somewhere on your page, this will
+		set the datepick style -- useful if you want the default to be 
+		something other than what I chose (and I've switched to the popup
+		version rather, since it's my code, and I can maintain it a little
+		easier -- but the dhtml version should still be supported -- also the
+		popup version looks a little neater, since it doesn't have to do
+		tricks with underlying controls for buggy browsers (like IE)).
+>>>
+Thu Aug  4 13:40:26 SAST 2005 <<<
+	* bugfixes
+		- object event adding code fixed (extra quote)
+		- checklabel scripts addition code fixed (load_array called with
+			array arguments reversed)
+>>>
+Tue Aug  2 16:20:42 SAST 2005 <<<
+	* bugfixes
+		- textbox and text area validation works properly now -- they had
+			an "out-by-one"-style error from using the onkeypress event for
+			validation.
+	* enhancements
+		- add_object_event -> function allows adding of events to objects
+			with known reserved names (eg "window")
+		- demowidget input type produces a set of div's with demo widgets 
+			in them (nice if you are using the wizard as a frontend to
+			data capture to create more wizards (which I am)
+		- extra array can take another argument for all input types:
+			"tr_id" which sets the id on the table row containing the
+			input, so you can make your widget dynamically show and hide
+			inputs, based on the values of other inputs -- scripting of
+			that is, for the moment, left up to you. But I may include it
+			later. It's not all that tricky to do, really.
+		- modlist input type allows you to capture a neat list of user-defined
+			values. Not documented yet, but not that tricky to use, if you
+			are a little brave. Remember to set the delimiter value in the
+			extra array to something you want (or realise that values will
+			be separated by a ;)
+>>>
+Fri Jul 29 14:19:24 SAST 2005 <<<
+	* updates, updates, updates! all good here!
+		- validation code bugsquishing contest. I win.  (:
+		- better handling of javascript events against wizard inputs -- 
+			using the javascript addevent code that I came up with -- not
+			entirely on my own, there was some inspiration from 
+			http://simon.incutio.com/archive/2004/05/26/addLoadEvent,
+			although my implementation is generic
+			What does this mean for the Little People?
+			well, you can add javascript event handlers to any input now (as
+			well as the label types), without fear that your event handlers
+			will be overwritten (as they would have sometimes been).
+			Input validation code is run *last* on the list of events for
+			an input -- so note that bad code that you register against
+			an input's events will prevent validation from taking place (since
+			the code will stop at the last place of error), and you may end
+			up with a stage that will not progress. You have been warned.
+>>>
+Mon Jul 25 11:35:11 SAST 2005 <<<
+	* updates to validation code 
+		- javascript validation between steps working
+			properly now for exact values. I haven't implemented numeric 
+			ranges yet,	but I'm not sure when I'll need it... so... unless 
+			someone else needs it?
+>>>
+Wed Jul 20 11:51:05 SAST 2005 <<<
+	* includes smartness updated:
+		- we will look by default in:
+			., .., include/, ../include/, images/ and ../images/
+			extra paths can be added with the includes_dir and images_dir 
+			directives: these paths are then searched first.
+>>>
+Tue Jun 14 10:56:52 SAST 2005 <<<
+	* bugfix 
+		- from wil@slagen.nl:
+			fixed extra comma in js array (so used to php not caring!)
+	* bugfix (also brought up by wil@slagen.nl, but fixed just before he 
+		reported it:)
+		- $vcontrols was not populating the js vcontrols stuff correctly,
+			meaning js errors and things Just Not Working (TM). Fixed. Mainly,
+			I moved from trying to use clever js array notations, to 
+			long-winded, more robust js-code. I might apply this elsewhere 
+			later, but for now,	I ain't fixing what ain't broke
+	* enhancents
+		-requested on wizard forums at phpclasses.org:
+			added cascading select ability. Levering off of the Cassel class
+			that I created (mainly for this purpose), selects can be defined
+			that will affect the available choices for "child" selects. The
+			"children" can be plain selects, or other Cassel-generated selects.
+			Propogation of choice is insured.
+		- The infobox/license "input" can take two extra fields in the "extra"
+			array: height and width. These must be proper height and width
+			identifiers, like "50px", as they are inserted into the html styling
+			just-as-is.
+		- images that aren't found are replaced with "reasonable" button
+		representations.
+>>>
+2005-05-31: <<<
+	Added some smarts for detecting the includes dir and the images dir.
+	* should be able to use these scripts from the same dir as the calling
+		script now, instead of being forced to use include/ dir (not that I
+		recommend it)
+	* should be able to find images in either <includes_dir>/images, 
+		images/ dir parallel to the includes dir, or images/ off of dir
+		of calling script. That's the order they are searched in, and if
+		you have images in one that appears later, but one that is searched
+		for earlier exists, then you will have problems (iw no images showing).
+		You can also specify the images dir directly in the constructor.
+	* includes dir is expected to be the same dir that this script is found in.
+		You can overrid this in the constructor array.
+	* included js files are also searched for, in dirs in order:
+		1) dir of calling script
+		2) includes dir
+		3) parent dir of wizard's dir
+		4) include/ off the parent dir of the wizard script
+		5) lang/ dir off of includes dir
+		6) lang/ dir off of parent dir
+	  The last two are included for segregation of language files.
+>>>
+2005-04-11: <<<
+	Fixes made by Will Merrell
+	* Removed trailing , from js arrays in calendar generation scripts:
+		this was an issue with MSIE, but handled fine with mozilla.
+	* Changed button captions from "<< Prev" to "&lt;&lt; Prev" and
+		from "Next >>" to "Next &gt;&gt;" -- provides better compatability.
+>>>
+2005-03-31: <<<
+	* made the genopts function a little smarter with its options array:
+		if is_hash is sent as -1 (default in all calling functions) then
+		genopts tries to determine whether or not the options array is
+		a hash array, and do the right thing.
+	* new function get_unique_time_val to get a unique "time" value to
+		be used in ids of items in the wizard (and for the wizard itself)
+	* genopts now takes an optional thrid parameter: selected, which is either
+		a single selected value (string) (for a typical drop-down list), or
+		an array of selected values (for a multi-select list)
+	* summary page code changed a little: where information for the 
+		summary page is retrieved from a select / list, then the selected
+		option(s)' text is displayed, not the value of those options
+>>>
+previous: <<<
+	fixed bug in popup date selector javascript code generation. Should
+	actually work now.
+>>>

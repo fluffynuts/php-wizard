@@ -1,0 +1,915 @@
+<html>
+<title>Wizard Class documentation</title>
+<style>
+<!-- style for documentation <<< -->
+html {
+	background-color: #aaaaaa;
+}
+body {
+	color: #000000;
+	background-color: #aaaaaa;
+	font-family: verdana, helvetica, arial;
+	font-size: 10px;
+}
+h3 {
+	text-align: center;
+}
+div.shead {
+	color: #000000;
+	border: 1px solid #555555;
+	font-weight: bold;
+	margin-left: 5px;
+	margin-right: 5px;
+	padding: 5px;
+}
+div.section {
+	color: #000000;
+	background-color: #9999aa;
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 5px;
+	margin-bottom: 15px;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+div.codeblock {
+	color: #000000;
+	background-color: #bbbbbb;
+	padding: 5px
+	border: 1px solid #000033;
+	margin: 25px;
+	padding: 10px;
+}
+th {
+	background-color: #888888;
+	color: #000000;
+}
+td {
+	font-family: verdana, helvetica, arial;
+	vertical-align: top;
+	font-size: 10px;
+	border: 1px solid #bbbbbb;
+}
+p {
+	text-align: justify;
+}
+</style>
+<!-- >>> -->
+</head>
+<body>
+<h3>Wizard Class documentation</h3>
+<div class="shead">What is this?</div>
+<!--  <<< -->
+<div class="section"><p>
+	A wizard is a simpler interface for a user to enter large
+	amounts of data. The concept behind a wizard is to present small groups of
+	inputs for a user in such a manner that the enter entry process doesn't 
+	become too tedious. It's normally a good idea to group inputs that are
+	relevant to similar or the same section of data being collected onto
+	steps on a wizard: this is part of making the process a little more
+	painless for the user.
+	</p><p>
+	The Wizard class provides a simple way to achieve this aim: in a nutshell,
+	you, as the programmer, just need to tell the Wizard about <i>how</i> you 
+	would like your information to be gathered, and you can let the wizard
+	take care of the rendering and the logic required to make the appropriate
+	steps available as the user clicks her way through the multiple steps. I
+	coded this for use on a project that has, as it's base core, user-defined 
+	forms. I needed a unified way to present these forms, as well as to capture
+	the data necessary to generate these forms.</p>
+	<p>Whilst I believe that the demo page (test_wiz.php) and the comments
+	within the wizard class file (wizard.php) make implementation quite clear,
+	I realise that some people may just be put off by the sheer size of the
+	class file (some 2032 lines at time of writing), or daunted by an 
+	unfamiliar coding style. To this end, I've tried to compile some
+	more &quot;official&quot; documentation in this file, because I've had
+	so many requests for it. Someone offered to get his students to write
+	documentation as they used the class to further their studies. I haven't 
+	heard any more on that, but, should such documentation arise, I would 
+	gladly include it here -- it's always useful to get someone else's 
+	perspective on things.</p>
+</div>
+<!-- >>> -->
+<div class="shead">But why?</div>
+<!-- <<< -->
+<div class="section"><p>
+	Using the wizard class has several benefits, even if you just want to
+	render a single-step form, which will not get the trappings of navigation
+	buttons:
+	<ul>
+		<li>Unified look and feel for all of your forms.
+			<ul><li>Users enjoy a unified feel across an application. They
+			tend to get more at ease with the app quicker, and that makes
+			them more productive, which makes coders and managers happy.</li>
+			</ul>
+		</li>
+		<li>Less coding.
+			<ul><li>Less coding means more time to do the really tricky stuff
+			in you app. Spend less time generating html forms, and more time
+			implementing the logic of your application. With a robust form
+			generator, you don't have to keep on checking your output html
+			for the errors that creep in. If it works well once, it continues
+			to do so.</li></ul>
+		</li>
+		<li>Easier usage for the case where a lot of information has to be
+			captured.
+			<ul><li>There's a reason that the wizard-style interface has been
+			around for so long: it's successful. It makes a tedious process
+			less so, and certainly removes a lot of the &quot;daunt points&quot;
+			from a process.</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+<!-- >>> -->
+<div class="shead">About style and other such things</div>
+<!-- <<< -->
+<div class="section"><p>
+	I tend to do just about all of my coding in VIM. Actually, I stick to using
+	the graphical version (GVIM), but sometimes make short trips to the land
+	of the console. My reasons are simple: I need a uniform development 
+	environment on win32 and linux (because I'm forced to use the first, and
+	I love to use the second), and I needed something powerful, yet simple
+	and, quite importantly, free. Not just free as in beer -- free as in
+	licensing. I believe that the days of closed-source applications are
+	over. Commercial apps can still be written: a coder has to eat and feed
+	his wife and all that. But your clients deserve disclosure on the source, 
+	should you be abducted by aliens or something similar. Or even just so they
+	can also hire a hacker to implement features you didn't think of. But
+	enough of that.</p>
+	<p>Also, whilst VIM may give an initially steep learning curve, and
+	seem to contain unnecessary keyboard work, you will find that other
+	editors become annoying after you find the true power in vim. Also, very
+	few other editors are as ready to adapt to the coder's wishes.</p>
+	<p>The point is that you might notice a few commented out &lt;&lt;&lt;'s
+	and corresponding &gt;&gt;&gt;'s. This is not an angle-bracket fetish: it's
+	my choice for fold markers in vim (thanks to a friend) because curly braces
+	cause problems in Tcl (even when commented), and tend to mess up the
+	brace-matching for languages that use braces for code blocks, since
+	vim cannot always tell what is a code brace, and what is a fold brace.
+	You also might notice that I tend to stick to an 80 column line. This can
+	make some sections of deep code a little short on space, but it's something
+	I do as a matter of style (thanks to the same friend). It makes for
+	easier reading on a terminal, and means that the code is more easily
+	available to anyone who has time to waste on it.</p>
+</div>
+<!-- >>> -->
+<div class="shead">(1) Where do I put it all?</div>
+<!--- <<< -->
+<div class="section"><p>
+I've noticed a few bits of feedback which generally follow the lines &quot;It
+doesn't work!&quot;, or, more helpfully &quot;There isn't an include directory
+in the zip archive I got from phpclasses.org -- but your scripts rely on 
+it!&quot;. This is no programming bungle -- rather, it should be apparent that
+segregation of code is a very important concept to keep in mind, especially when
+working on a system that approaches the 50 000 to 100 000 (or more) lines of 
+code area. We're talking about a lot of code. Many files. It would be downright 
+silly to keep those files in one directory. Maintenance would be a mission.
+</p><p>
+So, the experienced coder, who has had to deal with mind-numbing lists of files
+in the same directory (that would be me!) realises that it's very important to
+segregate code. I used to just segregate library code from calling pages -- but
+now I would even suggest segregating out sections of code that do different
+things. It's the UNIX philosophy of building something small and contained
+that does exactly one thing well. Even though I have to admit that the
+wizard class alone borders on a serious violation of that principle. 
+Nonetheless, I have to point out some factors that seemed quite obvious to me,
+but which are obviously less apparent to someone else. Also, the 
+explanation seems necessary, since phpclasses.org does not do any
+filesystem hierarchy within their archives that you download. I just add files, 
+and they bundle them, on the fly, into an archive for you to use. It would
+be way neat if I could specify a filesystem layout for the archive, but I
+don't seem to have that option. So here are a few guidelines:</p>
+<ol><li>All scripts, except calling ones, are to be placed in a directory
+called <b>include/</b>, to be found off of a pathed directory for your PHP
+environment (which normally includes the executing directory of the calling
+script. Basically, this means that the files containing class definitions
+should be found in <b>include/</b> -- the javascript files are a little 
+different, because I've noticed issues with getting js files from another 
+directory (read: some browsers, some of the time). So those I just leave alone.
+Basically, the following files <b>must</b> be in <b>include/</b>:
+<ul><li>wizard.php</li><li>log.php</li><li>misc.php</li><li>datepicker.php 
+(this can be altered with a directive to the wizard class, and is only required
+when you want the pop-up date selector)</li></ul></li>
+<li>Images should appear in the <b>images/</b> directory. There are only five
+images (that I can think of) that you need. You can override them in the wizard
+item configurations, or just place your own images in <b>images/</b> with the
+same name. Sneaky huh? The images that are in use are:
+<ul><li>datepickerbutton.gif</li><li>sizedown.png</li><li>sizeup.png</li>
+<li>spinner_down.gif</li><li>spinner_up.gif</li></ul>
+size*.png are used in the resizable text areas (if applicable) and spinner*.gif
+are used in the spinner item (if used).
+</p>
+</div>
+<!-- >>> -->
+<div class="shead">Onto the real stuff -- (2) instantiating the class</div>
+<!-- <<< -->
+<div class="section"><p>
+	A lot of this explanation is just taken from the test_wiz.php file. Refer
+	to that when you want a flowing example of code (such that it is).
+	</p><p>
+	Most of the method interfaces in the wizard class are achieved through
+	arrays of arguments. Simply because it allows you to specify whatever 
+	arguments you want to specify, in whatever order you want. Kind of like
+	the way Python works. This means that you will often see the following
+	kind of method call:
+	<div class="codeblock"><code>
+	$obj->method(array(<br>
+		"index1"		=>	"value1", <br>
+		"index2"		=>	"value2",<br>
+	));
+	</code>
+	</div><p>
+	When I refer to arguments by name, you will be specifying them like this.
+	You can, of course, define the array before doing the method call, and just
+	give the array as the only argument (the first few calls in test_wiz.php
+	are like that) -- I just think that the code is clearer the first way.</p>
+	<p>Instantiating the wizard is easy -- you just assign a new instance of
+	the class to a variable. You can integrate the wizard's overall settings
+	into the instantiation, or set it later (the settings are available,
+	oddly enough, from an array referenced by: $obj->settings).</p>
+	<p>Possible setting values are:
+	<table align="center">
+		<tr><th>Setting</th><th>Influence</th><th>Default</th></tr>
+		<tr>
+			<td>postpage</td>
+			<td>The single page that will collect all of the data from
+				the wizard that is generated. The wizard does not require
+				that your surrounding code know anything about the fact that
+				there is a multi-step form in the process: the collecting
+				postpage just needs to handle the data captured.
+			</td>
+			<td>None -- you <b>must</b> specify this.</td>
+		</tr><tr>
+			<td>datepickstyle</td>
+			<td>Sets the type of date picker used (if any). Here's the kicker:
+			there's a <i>great</i>dhtml calendar, which I've included in the
+			supporting files. It's not mine, and I'm only including it for the
+			sake of completeness. It <i>is</i> open-source and free, but I'm not
+			going to ensure that the latest version is in the wizard archive.
+			Sorry. I just have too much else to do. On the other hand, I might
+			update it sometime. But don't hold your breath.<br>The dhtml 
+			calendar is the default, but there are some minor issues: 
+			particularly, in that awful browser IE, z-ordering is not respected
+			for all html elements, such that there are some nifty js functions
+			that hide html elements that would otherwise just stupidly sit
+			on top of the calendar. Mozilla, of course, doesn't suffer from
+			this affliction.<br>If the hiding and re-appearing of inline items
+			annoys you, feel free to use the other picker style: 
+			&quot;popup&quot;. This is a calendar that I wrote, originally in
+			asp, and ported to php, datepicker.php. It works quite nicely,
+			and may be more powerful -- though I have tried to duplicate the
+			nifty features in the dhtml calendar's coding (which is why I don't
+			want to maintain latest versioning). You can override the popup
+			page, if you have something nicer. See the docs on the datepicker
+			item.
+			</td>
+			<td>dhtml</td>
+		</tr>
+		<tr>
+			<td>formname</td>
+			<td>Name of the form that is generated.</td>
+			<td>frmWizard</td>
+		</tr>
+		<tr>
+			<td>cancelpage</td>
+			<td>Page to go to if the user clicks the Cancel button</td>
+			<td>Not set -- you must set this</td>
+		</tr>
+		<tr>
+			<td>formmethod</td>
+			<td>Method property of generated form. Can be &quot;post&quot; or
+			&quot;get&quot;.</td>
+			<td>post</td>
+		</tr>
+		<tr>
+			<td>cancelmsg</td>
+			<td>When the user clicks cancel, she should be asked if she's
+				really sure or something to that effect. This is the message,
+				to be displayed with a yes/no dialogue.
+			</td>
+			<td>Are you sure you would like to cancel this operation?</td>
+		</tr>
+		<tr>
+			<td>summary</td>
+			<td>Most often, a long wizard has a summary page at the end where
+			the user can check her input. This is what this setting is for.
+			Possible values are 1 and 0 -- 1 renders the summary page, and 0
+			doesn't.</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>summary_title</td>
+			<td>Title on summary page (if rendered)</td>
+			<td>Summary:</td>
+		</tr>
+		<tr>
+			<td>summary_caption</td>
+			<td>Caption on summary page (if rendered)</td>
+			<td>Below is a summary of the data you have entered.</td>
+		</td>
+		<tr>
+			<td>summary_image</td>
+			<td>As you will see just now, ever step may have an associated
+				icon image at the top left of the form. This is just the image
+				that can be used for the summary. Images should be kept small
+				-- they should, if even present, just be an identifying icon
+				for the wizard or stage. Check out how the icon is used on
+				a typical installer. The image is totally optional: not setting
+				an image just causes the wizard to render slightly differently:
+				there is no &quot;gap&quot; left where the image should have
+				been.
+			</td>
+			<td>None set -- optional</td>
+		</tr>
+		<tr>
+			<td>summary_label</td>
+			<td>A at the end of the summary instructing the user to check her
+				work and click finish when she's done.</td>
+			<td>Click &quot;Finish&quot; to save this data.</td>
+		</tr>
+		<tr>
+			<td>images_dir</td>
+			<td>Directory to use as the base for all images not explicitly set
+				in the wizard, such as the size_up image for the textarea.</td>
+			<td>The dir is looked for, by name (images/) off of the calling
+				script's dir, the wizard script's dir, and the parent of the
+				wizard script's dir</td>
+		</tr>
+		<tr>
+			<td>includes_dir</td>
+			<td>Dir to search for included php and js files. The js includes are
+				also searched for in the parent of this dir, the calling script's
+				dir, and lang/ dirs off of the parent and include dirs.</td>
+			<td>The dir is searched for, much like images_dir</td>
+		</tr>
+		<tr>
+			<td>wizdisplay</td>
+			<td>Boolean: whether or not to display with the whole 
+				&quot;wizard&quot; look and feel. When set to false, the 
+				steps are all rendered in a rather flat, ordinary fashion,
+				and the titles and captions for your steps are ignored.</td>
+			<td>true</td>
+		</tr>
+		<tr>
+			<td>mark_required</td>
+			<td>Boolean: whether or not to mark required fields with a nice
+				red asterisk.</td>
+			<td>true</td>
+		</tr>
+	</table>
+</div>
+<!-- >>> -->
+<div class="shead">(3) Steps</div>
+<!-- <<< -->
+<div class="section"><p>
+	Each step must be properly defined, and should contain at least one data
+	entry (otherwise, what's the point of that step?). Note that if you only
+	have one step on your wizard, then it reverts to just being a fancy form:
+	the Next and Back buttons will not be rendered.
+	Steps are added like follows:
+	<div class="codeblock"><code>
+	$obj->addstep(array(<br>
+		// put your step settings here <br>
+	));
+	</code></div>
+	<p>The following settings are available:
+	<table border="0" align="center">
+		<tr><th>Setting</th><th>Influence</th><th>Default</th></tr>
+		<tr>
+			<td>title</td>
+			<td>Title to display on step</td>
+			<td>Step [current step number]</td>
+		</tr>
+		<tr>
+			<td>caption</td>
+			<td>Caption to display on the step</td>
+			<td>This is step number: [current step number]</td>
+		</tr>
+		<tr>
+			<td>image</td>
+			<td>URL to image to use for a step icon</td>
+			<td>Not set (optional)</td>
+		</tr>
+		<tr>
+			<td>stepnum</td>
+			<td>Number of step to add this in as. There are also two special
+				words you can use here: prepend and append, which will do as 
+				the words suggest.
+			</td>
+			<td>append</td>
+		</tr>
+	</table>
+	Note that the addstep method returns the number of the step that was added.
+	You will need this index number later on for adding inputs to that step.
+</div>
+<!-- >>> -->
+<div class="shead">(4) Inputs</div>
+<!-- <<< -->
+<div class="section"><p>On to the real meat of what's happening here. The 
+	inputs you define will be the user's direct means of capturing the data
+	she has to capture. So use them wisely.</p>
+	<p>You would use the addstep method of the wizard class, in the same manner
+	that you have called other methods: with an array containing your required
+	settings (taken directly from the wizard.php comments, and formatted 
+	nicely for you to read):
+	<table border="0" align="center">
+		<tr><th>Setting</th><th>Influence</th><th>Default</th></tr>
+		<tr>
+			<td>step</td>
+			<td>The step number to add this to. If the step
+							doesn't exist, it is created.</td>
+			<td><strike>None -- you must specify this</strike> defaults to last step added</td>
+		</tr>
+		<tr>
+			<td>prompt</td>
+			<td>The textural prompt string that the user sees.
+							IOW, the question he/she must answer.<br>
+				For example: &quot;What is your name?&quot;
+			</td>
+			<td>None -- you must specify this</td>
+		</tr>
+		<tr>
+			<td>type</td>
+			<td>The input type of the input; possible values are:
+				<table align="center" border="0">
+				<tr><th>Possible typenames</th><th>What you get</th><th>alias(es)</th></tr>
+				<tr>
+					<td>textbox<br>
+						input<br>
+						entry</td>
+					<td>Simplest input: one-liner text input</td>
+					<td>input, entry</td>
+				</tr>
+				<tr>
+					<td>textarea<br>
+						text</td>
+					<td>Larger text input; multi line</td>
+					<td>text</td>
+				</tr>
+					<td>select<br>
+						drop-list</td>
+					<td>Drop-down list with one possible choice; requires
+						an option-list (varname &quot;options&quot;) to be 
+						set</td>
+					<td>droplist</td>
+				</tr><tr>
+					<td>list<br>
+						listbox<br>
+						staticlist<br></td>
+					<td>Multi-select list. Avoid if possible 
+							-- checks are much better for small
+							lists, and single-selects are 
+							better accomplished with select. The list is not
+							particularly user-friendly, in my experience; 
+							requires options to be set
+					</td>
+					<td>listbox, staticlist</td>
+				</tr>
+				<tr>
+					<td>date<br>
+						datepicker<br>
+						dateselect</td>
+					<td>Date select box, with pretty button, OR popup-date
+						selector. Up to you (see wizard options)</td>
+					<td>datepicker, dateselect</td>
+				</tr>
+				<tr>
+					<td>spinner<br>
+						spinint<br>
+						spinselect</td>
+					<td>Text-select with "up" and "down" buttons to move 
+						between choices; can generate the list of
+						integer choices for you: specify the low_val, high_val
+						and step in the settings array
+					</td>
+					<td>spinselect, spinint</td>
+				</tr>
+				<tr>
+					<td>radio</td>
+					<td>
+						Single-select option list, with radio buttons. Must set
+						the options, hey!
+					</td>
+					<td></td>
+				</tr>
+					<td>checkbox<br>
+						checkbutton<br>
+					</td>
+					<td>Multiple select option list, with check boxes by each
+						option. Don't forget your option list</td>
+					<td>checkbutton</td>
+				</tr>
+				<tr>
+					<td>helpertext</td>
+					<td>Text box with select -- gives a list
+							to help the user, but allows user-
+							defined input. Kinda like a comboselect. Not
+							particularly elegant.</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>memorytext</td>
+					<td>As for helpertext, but saves the user's input
+							for others to use (eg company name)
+							NB: requires a special parameter:
+							"savepage" that actually does the 
+							saving into your system. Not fully tested yet.
+							May be buggy as hell.
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>label</td>
+					<td>Not really an input, simply information</td>
+				</tr>
+				<tr>
+					<td>infobox</td>
+					<td>Like a larger form of the label. Actually a div, with
+					scrolling capability. The default size is set in the wizard
+					style definition, but you can tweak the height and width
+					with elements of the &quot;extra&quot; array (use the keys
+					&quot;height&quot; and &quot;width&quot;, assigning
+					proper html size values, like &quot;50px&quot;). See the
+					test_wiz.php example script.</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>checklabel</td>
+					<td>Gives a checkbox with a label to the right, like
+						a EULA acceptance. May be used to prevent a user
+						from proceeding with the wizard until she accepts
+						something, like a license agreement. See the 
+						test_wiz.php example</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>modlist</td>
+					<td>creates a listbox which the user can add or remove
+						items from, as well as ordering them. Kind of like a
+						neater-looking text entry where a user might just list
+						values delimited by a string (such as ;). In fact, the
+						control produces that for an output.</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>compound</td>
+					<td>Basically
+						allows you to have more than one input widget for a
+						question. The values captured are presented as a
+						run-on string in the summary, but are sent to the post
+						page as separate values. This allows you to do something
+						like:
+						<table border="0">
+							<tr><td>how old are you?</td>
+								<td><input style="width: 100px">
+									<select>
+										<option>years</option>
+										<option>months</option>
+										<option>days</option>
+									</select>
+								</td>
+							</tr>
+						</table>
+						When doing compound inputs, simply name your varnames,
+						tooltips, options and everything with a convention:
+						[string][idx] where idx starts at 1 (for instance:
+						varname1, options1, etc). Inputs will be added as long
+						as varname[idx++] exists.
+					</td>	
+					<td></td>
+			</table>
+		</td>
+		<td>textbox</td>
+	</tr>
+	<tr>	
+		<td>options</td>
+		<td>The allowable options for input types that require
+			options. Empty option lists are allowed (but why?)
+			but are logged. Options are brought in in array
+			format. (yes, this is a sub-array in the settings array)
+		</td>
+		<td>None set -- please set where needed</td>
+	</tr>
+	<tr>
+		<td>position</td>
+		<td>Where to place this. Defaults to append, but may be 
+			numeric (watch out: will overwrite anything there)
+			or "prepend". In the interests of keeping code
+			tighter, be warned that prepending inputs will end
+			up with inputs with *negative* positions, which
+			may produce unexpected results.
+		</td>
+		<td>append</td>
+	</tr>
+	<tr>
+		<td>required</td>
+		<td>The step cannot progress until a value is chosen / entered</td>
+		<td>0</td>
+	<tr>
+	</tr>
+		<td>required_val</td>
+		<td>the step cannot progress until the required value
+			has been selected (eg "Do you accept the license?"
+			requiring a "yes")</td>
+		<td>Not set.</td>
+	</tr>
+	<tr>
+		<td>varname</td>
+		<td>Name of variable to load with this value
+			no checking done: make sure you don't use same
+			names, otherwise expect unexpected results (:<br>
+			<b>update:</b>this is also aliased by &quot;name&quot;
+		</td>
+		<td>Not set. <b>Must be set</b></td>
+	</tr>
+	<tr>
+		<td>value</td>
+		<td>The loaded value of the input</td>
+		<td>Not set. Optional</td>
+	</tr>
+	<tr>
+		<td>style</td>
+		<td>Extra css style parameters that an input may have. If there are
+			no semi-colons in this string, then it is assumed that the
+			style string is a class.</td>
+		<td>If not set, then the style classes in the wizard.php file will take 
+			effect</td>
+	</tr>
+	<tr>
+		<td>extra</td>
+		<td><p>Extra parameters to the input generator
+			this is to come in as an array. Some inputs can take extra bits
+			of information (for instance, you can choose the layout of
+			checkbuttons). Please check each individual "extra" invocation
+			in wizard.php to fiddle with these.</p>
+			<p>Some extra parameters that may be useful:
+			<table width="100%">
+				<tr><th>Applies to</th><th>Parameter</th></tr>
+				<tr>
+					<td>all inputs</td>
+					<td>scripts: valid javascript script
+					definitions, including events; eg: 
+					<div class="codeblock">$def[&quot;extra&quot;][&quot;scripts&quot;] = array(&quot;onclick&quot; =&gt; &quot;alert('foo');&quot;);</div>
+					<strike>Note that if you have an onkeypress event for a text input,
+					it is over-ridden
+					by setting up validation on the input. So you can't
+					set a required_val, and then put in your own onkeypress
+					event: it will be ignored, as the validation code will
+					be evaluated first, and your code left out in the cold.
+					The same applies for an onchange event for a select.
+					Generally, if you want to use the wizard's generated 
+					validation, leave the scripts alone, because chances are
+					your scripts will be ignored. This can be overcome with
+					some classy javascript. If there is a need for it, I may
+					implement said classy javascript.</strike><br>
+					<b>update:</b><br>
+					I have done so. Now you can add scripts to your heart's
+					content, but note that the format has changed from a
+					straight string to an array with events in it. The old
+					string syntax will prompt the wizard class to print a 
+					warning, and ignore your scripts.
+					</td>
+				<tr>
+					<td>checklabel</td>
+					<td>height: specifies a height for the 
+					input; must be a valid css size (eg: &quot;50px&quot;)<br>
+					width: specifies a width for the input; must be a valid css
+					size</td>
+				<tr>
+					<td>textarea</td>
+					<td>
+						cols: integer number of columns to create text input 
+							with<br>
+						rows: integer number of rows to create text input
+							with<br>
+						resizable: boolean, (1 or 0) to allow the user to
+							resize the text input. Default is on, and it's
+							nice for the user to leave it that way.<br>
+						sizeup_img: url to image to use for sizeup button.<br>
+						sizedown_img: url to image to use for sizedown button
+					</td>
+				</tr>
+				<tr>
+					<td>select</td>
+					<td>hash: boolean to determine whether or not the options
+						list that you sent was a hash array, where the indeces
+						are to be used as the values in the select, and the
+						values are to be used as the options that the user
+						sees. By default, it is set to -1, which means that
+						the wizard class tries to determine whether or not
+						the options are a hash array. When options are not
+						a hash array, the value of each option is set to the
+						textural representation -- ie, what the user selects
+						is what is sent to the post page. Most other inputs
+						that use lists of options also utilise this parameter.
+					</td>
+				</tr><tr>
+					<td>date</td>
+					<td>
+					button_img: image file to be used as the clickable button
+						for the user to select a date. If not given, or not
+						found, then an elipsis button is used (<input type="button" value="..." style="width: 22px; height: 22px" onclick="alert('What are you clicking here for?!')">)<br>
+					pop_page: your own page to pop up for a date select, or
+						the url of the datepicker, if you moved it. Only valid
+						for the popup variant of the datepicker, naturally.<br>
+					title: title to display on the popup window, if used.<br>
+					dateformat: format of date to be used. Default is Y-m-d<br>
+					allowweekends: boolean, determines whether weekends can be 
+						selected<br>
+					allowholidays: boolean, determines whether holidays can be
+						selected. Very few holidays are coded in (practically
+						just Christmas and Easter. Set other days with 
+						bad_day_list)<br>
+					bad_day_list: list of unselectable days / holidays.
+					show_time: only applies to dhtml calendar: determines 
+						whether to allow time selection and visibility.
+					</td>
+				</tr><tr>
+					<td>spinner</td>
+					<td>
+						strict: boolean, restrict input to only the 
+							items defined in 
+							the list<br>
+						up_img: url to image to use for up button<br>
+						down_img: url to image to use for down button<br>
+						up_title: title over the up/next button<br>
+						down_title: title over the down/previous button<br>
+						input_title: title to put on the textbox element of
+							the item<br>
+						low_val: low value, for integer spinner, with 
+							wizard-generated values<br>
+						high_val: high value, like above<br>
+						step: interval between values for wizard-generated
+							values
+					</td>
+				</tr><tr>
+					<td>radio</td>
+					<td>
+						rows: number of rows to use for items.<br>
+						cols: number of cols to use for items.<br>
+						hash: as for hash on select input
+				</tr>
+				<tr>
+					<td>memorytext / helpertext</td>
+					<td>
+						save_page: url to page which should have a form named
+							&quot;frm&quot;, with one hidden input 
+							&quot;newval&quotl; -- this form accepts a new 
+							value to be saved, and should point to some page
+							(maybe itself) to do the actual saving. It is
+							up to this page to reload the basic form page
+							that is required to make a save. This page is
+							basically just held in a hidden frame on the 
+							wizard. The page must also contain all logic for
+							the saving of new items, if applicable. Save
+							methods are called on a change event. This item
+							only refers to a memorytext. Note that setting
+							it on a helpertext transforms that input into
+							a memorytext.<br>
+						button_img: image to use for button<br>
+						background: background color of list item<br>
+						color: text color of list item<br>
+						selbg: line color of selected item in list<br>
+						selcolor: text color of selected item in list<br>
+					</td>
+				</tr>
+				<tr>
+					<td>infobox</td>
+					<td>height: css-compliant height of infobox element (eg
+						&quot;50px&quot;)<br>
+						width: css-compliant widht of infobox element.
+				</tr>
+				<tr>
+					<td>tlc_select</td>
+					<td>
+						btn_img: url to image to use for a button<br>
+						host: tlc host name or ip<br>
+						port: port to connect on<br>
+						module: module to invoke<br>
+						cmd: command to invoke in module<br>
+						data: data to send to command<br>
+						phpurl: url of php page that does the work
+					</td>
+				</tr>
+				<tr>
+					<td>modlist</td>
+					<td>sortops: get the options to be auto-sorted (0)<br>
+						delimiter: string to delimit the output field's
+							options with (;)<br>
+						hash: the input options are an hash array (autodetect)<br>
+					</td>
+				</tr>
+			</table>
+			</td>
+		<td>Not set. Set if required</td>
+	</tr>
+	<tr>
+		<td>title</td>
+		<td>Title to display in regular tooltip and 
+			statusbar for this input -- appears over input item
+		</td>
+		<td>Not set. Optional</td>
+	</tr>
+	<tr>
+		<td>caption</td>
+		<td>Short title used as a mini-heading in the summary page (if
+			rendered). Not required: defaults to the prompt.</td>
+		<td>Not set. Optional</td>
+	</tr>
+	<tr>
+		<td>tooltip</td>
+		<td>Longer tooltip that will appear over the prompt,
+							using a dhtml tooltip item. Not required.
+		</td>
+		<td>Not set. Optional</td>
+	</tr>
+	<tr>
+		<td>cascades</td>
+		<td>This is an option specific to the cassel input. I was going
+		just just make it part of the &quot;extra&quot; array, but the
+		Cassel cascades definition is already quite a complex nesting of
+		arrays: I just wanted to make it one level simpler for the 
+		programmer to define. Look at the Cassel documentation to see
+		how cascade arrays are defined: such discussion is outside of the
+		scope of this document. There is a reasonable example in the
+		test_wiz.php example script, however.</td>
+		<td>blank array</td>
+	</tr>
+	</table>
+</div>
+<!-- >>> -->
+<div class="shead">(5) Wrapping it up</div>
+<!-- <<< -->
+<div class="section"><p>
+Once you have set up your wizard, you just need to tell it to render. Of course,
+this means that you can set up the wizard inch-by-inch over a convoluted php
+file, and only render at the end of it all. The general idea, from a wizard's
+standpoint is:
+	<div class="codeblock"><code>
+	$wiz = new Wizard(array(<br>
+	// place your wizard settings here<br>
+	));<br>
+	$step = $wiz->addstep(array(<br>
+	// place your step settings here<br>
+	));<br>
+	$wiz->addinput(array(<br>
+		"step"		=>	$step,<br>
+		// input settings go here,<br>
+	));<br>
+	...<br>
+	...<br>
+	$wiz->render();<br>
+	</code>
+	</div>
+</div>
+<!-- >>> -->
+<div class="shead">(6) Tidbits</div>
+<!-- <<< -->
+<div class="section"><p>Some small notes:
+<ul><li>The wizard provides for a fixed-height dialogue. You can alter the 
+height by setting $wizard_body_height <b>before</b>
+including wizard.php. Not all 
+sizes will work well (in fact, very small ones just won't work, and very
+large ones will end up with the toolbar at the bottom being a little to well
+spaced out). If you don't like the height I use as default, experiment</li>
+<li>The standard inputs are all solid. The ones I have worked on may be not as 
+solid. I appreciate feedback, but may not be able to deal with it as timeously
+as you might like. Please have some patience with me.</li>
+<li>You may not like my coding style, editor preference or favourite color. 
+This is why you are not me. In the interests of co-operation, please don't 
+come to me with an attitude. This work is released for free -- I cannot be
+held liable for anything (including bad hair days) that may result from it.</li>
+<li>The wizard class has an internal mechanism for attaching javascript events
+to document elements and other objects. You can, of course, use these functions
+to your own advantage:
+<div class="codeblock">
+	$wizobj-&gt;attach_event(<i>element_id</i>, <i>eventname</i>, <i>script_or_function</i>);
+</div>
+attaches the script or function defined in the string <i>script_or_function</i>
+to the element with the id <i>element_id</i>, for the event <i>eventname</i>,
+almost as might be suggested by the names of the arguments. You can set
+<i>eventname</i> to be a real javascript event (eg. &uot;onclick&quot;), or 
+you can leave out the leading &quot;on&quot; -- it will be added for you.
+Naturally, you need to be careful when using this rather raw interface, since
+there is no checking on whether or not the attachments are legal (correct
+events / scripts, etc). This is fine and dandy for elements within the 
+document, but another mechanism must be employed to add events to, say, the
+window object:
+<div class="codeblock">
+	$wizobj-&gt;attach_object_event(<i>objectname</i>, <i>eventname</i>, <i>script_or_function</i>);
+</div>
+In this manner, we can set a series of scripts to run when the window is
+loaded (in fact, the wizard class makes use of this mechanism for its
+startup scripts):
+<div class="codeblock">
+	$wizobj-&gt;attach_event(&quot;window&quot;, &quot;onload&quot;, &quot;alert('foo')&quot;);
+</div>
+	$wizobj-&gt;attach_event(&quot;window&quot;, &quot;onload&quot;, &quot;alert('bar')&quot;);
+	$wizobj-&gt;attach_event(&quot;window&quot;, &quot;onload&quot;, &quot;alert('quux')&quot;);
+</li>
+</ul>
+<!-- >>> -->
+<p style="text-align:right">Author: Dave McColl, 2005-06-14</p>
+</body>
+</html>
