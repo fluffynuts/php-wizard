@@ -1,6 +1,8 @@
 # php-wizard
 Import from my old phpclasses days
 
+Last updated 2006-07-02
+
 This was originally submitted to PHPClasses.org aroung 2005
 and was maintained up until mid-2006. It's a bit of a monolith
 - I obviously hadn't heard of the concept of refactoring then
